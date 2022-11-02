@@ -6,6 +6,7 @@ package cfh.zipinfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Formatter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -109,12 +110,14 @@ public class Main {
     //----------------------------------------------------------------------------------------------
     
     public static String format8(long value) {
-        return format4((int)(value >> 32))+ "_" + format4((int)value);
+        return format4((int)(value>>32)) +  "_" + format4((int)value);
     }
     
     public static String format4(int value) {
-        return "%04x_%04x".formatted(
-            (value>>16)&0xFFFF, 
-            value&0xFFFF);
+        return format2((short)(value>>16)) + "_" + format2((short)value);
+    }
+    
+    public static String format2(short value) {
+        return "%04x".formatted(value&0xFFFF);
     }
 }

@@ -7,7 +7,6 @@ package cfh.zipinfo;
 import java.util.Formatter;
 
 import cfh.zipinfo.FieldType.Length;
-import cfh.zipinfo.FieldType.Size;
 
 /**
  * @author Carlos F. Heuberger, 2022-11-02
@@ -19,6 +18,8 @@ public record Field<T> (
 {
     @Override
     public String toString() {
+        if (true)
+        return type.format(this);
         try ( var formatter = new Formatter() ) {
             formatter.format("%s=", type);
             if (value instanceof byte[] bytes) {
@@ -29,7 +30,7 @@ public record Field<T> (
                     first = false;
                 }
                 formatter.format("]");
-            } else if (type instanceof Length || type instanceof Size) {
+            } else if (type instanceof Length) {
                 formatter.format("%d", value);
             } else if (value instanceof Byte b) {
                 formatter.format("0x%02x", b);

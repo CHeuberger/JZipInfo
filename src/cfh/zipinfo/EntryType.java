@@ -18,8 +18,8 @@ enum EntryType {
     
     LocalFileHeader(
         0x04034b50
-        , two("Version")
-        , flags()
+        , version("Version needed")
+        , flags("Flags")
         , method()
         , time("Time")
         , date("Date")
@@ -33,9 +33,9 @@ enum EntryType {
         ),
     ;
     private final int signature;
-    private final List<FieldType> fields;
+    private final List<FieldType<?>> fields;
     
-    private EntryType(int signature, FieldType... fields) {
+    private EntryType(int signature, FieldType<?>... fields) {
         this.signature = signature;
         this.fields = List.of(fields);
     }
@@ -44,7 +44,7 @@ enum EntryType {
         return signature;
     }
     
-    public List<FieldType> fields() {
+    public List<FieldType<?>> fields() {
         return fields;
     }
 
@@ -62,43 +62,47 @@ enum EntryType {
     
     //==============================================================================================
     
-    private static FieldType two(String name) {
-        return new FieldType.TwoBytes(name);
+    private static FieldType<Short> two(String name) {
+        return new FieldType.TwoBytes(name, Format::hex2);
     }
     
-    private static FieldType four(String name) {
-        return new FieldType.FourBytes(name);
+    private static FieldType<Integer> four(String name) {
+        return new FieldType.FourBytes(name, Format::hex4);
     }
     
-    private static FieldType flags() {
-        return two("Flags");
+    private static FieldType<Short> version(String name) {
+        return new FieldType.TwoBytes(name, Format::version);
     }
     
-    private static FieldType method() {
+    private static FieldType<Short> flags(String name) {
+        return new FieldType.TwoBytes(name, Format::flags);
+    }
+    
+    private static FieldType<Short> method() {
         return two("Method");
     }
     
-    private static FieldType time(String name) {
+    private static FieldType<Short> time(String name) {
         return two(name);
     }
     
-    private static FieldType date(String name) {
+    private static FieldType<Short> date(String name) {
         return two(name);
     }
     
-    private static FieldType size(String name) {
-        return new FieldType.Size(name);
+    private static FieldType<Integer> size(String name) {
+        return new FieldType.FourBytes(name, Object::toString);
     }
     
-    private static FieldType length(String name) {
+    private static FieldType<Short> length(String name) {
         return new FieldType.Length(name);
     }
     
-    private static FieldType text(String name) {
+    private static FieldType<String> text(String name) {
         return new FieldType.Text(name);
     }
     
-    private static FieldType bytes(String name) {
+    private static FieldType<byte[]> bytes(String name) {
         return new FieldType.Bytes(name);
     }
 }
